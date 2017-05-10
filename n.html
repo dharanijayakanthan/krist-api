@@ -1,0 +1,167 @@
+ <!DOCTYPE html>  
+ <html>  
+      <head>  
+           <title>KRISTAL |  - FINANCE</title>  
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+           <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>  
+           <link rel="stylesheet" href="style.css">
+		    
+      
+	  </head>  
+      <body>  
+	  <div class="container">
+
+          
+   <div ng-app="myapp">
+ <div ng-controller="usercontroller" style="">  
+	<br>			         
+ <div class="well">
+ <h3 align="center" style="color:grey; font-weight:bolder;">KRISTAL</h3>  
+
+
+<div class="row" style="height:130px;">
+<div class="col-md-10 col-md-offset-1">
+<br>
+<input type="text" ng-model="search" ng-keyup="comp(search)" id="searchid" class="form-control">
+<ul  class="list-group" style="list-style-type:none;color:black">
+
+ <li class="list-group-item" style="position:relative" ng-repeat="x in response.data | orderBy:'name' | filter:search | limitTo:3" ng-click="complete(x.name); passid(x.id)">{{x.name}}<li>
+ </ul>
+</div>
+<div class="col-md-1">
+<br>
+<input type="submit" value="ADD" ng-click="addRow()" class="btn btn-primary">
+</div>
+</div>
+<br>
+<br>
+</div>
+ <br>
+<br>
+
+						
+	  
+	  <div class = "col-md-12">
+<div class="well">	
+<h3 style="text-align:center;color:grey; font-weight:bolder;">TABLE</h3>
+<br>
+	  <table class="table table-bordered table-inverse" style="border-radius:8px;">
+  <thead style="background-color:#ef5b25;">
+    <tr >
+	  <th>#</th>
+     
+      <th>Company Name</th>
+	   <th>Currency</th>
+       <th>Symbol</th>
+	  <th>High Price</th>
+	  <th>Pricing Date</th>
+	 
+    </tr>
+  </thead>
+  <tbody style="background-color:#e9e9e9; color:black;">
+    <tr ng-repeat="rowContent in rows | orderBy:(rowcontent.name)">
+      <td>{{$index+1}}</td>
+	  <td>{{rowContent.name}}</td>
+	  <td>{{rowContent.currency}}</td>
+	  <td>{{rowContent.symbol}}</td>
+	  <td>{{rowContent.highPrice}}</td>
+	  <td>{{rowContent.pricingDate}}</td>
+	</tr>
+  </tbody>
+</table>    
+
+
+
+
+</div>
+
+
+
+
+</div>			
+</div>
+</div>
+  </div>
+  
+<script>  
+
+ var app = angular.module("myapp",[]);  
+ app.controller("usercontroller", function($scope,$http){
+
+ 
+ $scope.rows = [];
+var config1 = {headers:  {
+"User-ID":"379",
+"Access-Token" : "eWEyOS5HbHNwQkRCVUJPX2d0UUNGUVR4Z1NKRTgzUkdCWHB2V1NCbWwtckNHWW5iS05NSjJLY0J5YU5CeU5QWFhTU3R5N1phdTctd250aW15dk5ZUFcySEt3ckpxNUdCNFhwQzYyNGVQcnlKSWlYa21Fa0xvQ0hIZ1kxZVRjaU0wJVVTRVIlMzc5",
+"User-IP":"0.0.0.0",
+"Agent" : "agent"}
+};
+$scope.search="";
+var url1 = "https://staging.investo2o.com/assetmanager-ws/api/v1/assets/getassets?query="+ $scope.search +"&assetType=STK";
+  $http.get(url1,config1)
+  .then(function(response) {
+      $scope.response = response;
+	    });
+		$scope.comp = function(string){  
+          var output = [];  
+           angular.forEach($scope.response.data, function(search){  
+                if(search.toLowerCase().indexOf(string.toLowerCase()) >= 0)  
+                {  
+                     output.push(search);  
+                }  
+           });  
+           
+      }
+	  $scope.complete = function(string){
+ $scope.search=string;
+ $scope.hidethis = true;
+ 
+ };
+
+$scope.passid =function(inti){ 
+ var config2 = { headers:  {
+"User-ID":"379",
+"Access-Token" : "eWEyOS5HbHNwQkRCVUJPX2d0UUNGUVR4Z1NKRTgzUkdCWHB2V1NCbWwtckNHWW5iS05NSjJLY0J5YU5CeU5QWFhTU3R5N1phdTctd250aW15dk5ZUFcySEt3ckpxNUdCNFhwQzYyNGVQcnlKSWlYa21Fa0xvQ0hIZ1kxZVRjaU0wJVVTRVIlMzc5",
+"User-IP":"0.0.0.0",
+"Agent" : "agent"
+}
+};
+$scope.id = inti;
+
+  
+var url2 = "https://staging.investo2o.com/assetmanager-ws/api/v3/getassetdetails?asset="+ $scope.id +"&type=STK&isCustom=false";
+  $http.get(url2,config2)
+  .then(function(response) {
+      $scope.responsed = response;
+   
+  
+ 
+  
+  $scope.addRow = function() {
+    
+    $scope.rows.push({'name':$scope.responsed.data.contractName,'currency':$scope.responsed.data.currency,'symbol':$scope.responsed.data.symbol,'pricingDate':$scope.responsed.data.pricingDate,'highPrice':$scope.responsed.data.highPrice});
+   
+  }
+	  });    
+
+	};
+	
+ 
+ });
+
+ 
+ </script>   
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  
+ </body>  
+ </html>  
+ 
